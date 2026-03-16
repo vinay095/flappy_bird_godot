@@ -42,6 +42,11 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 
 
+func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventScreenTouch and event.pressed and active and not dead:
+		velocity.y = -V_SPEED
+
+
 func die() -> void:
 	if dead:
 		return
