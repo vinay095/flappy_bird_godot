@@ -5,13 +5,14 @@ const PIPES = preload("res://scenes/pipes.tscn")
 const PIPE_Y_RANGE: Vector2 = Vector2(220.0, 440.0)
 const PIPE_X_OFFSET: float = 300.0
 
-const MIN_SPAWN_TIME: float = 1.7   # The closest pipes can be
+const MIN_SPAWN_TIME: float = 2.05   # The closest pipes can be
 const MAX_SPAWN_TIME: float = 3.0 # The furthest pipes can be
 
 @onready var camera: Camera2D = $Player/Camera2D
 @onready var pipe_container: Node2D = $PipeContainer
 @onready var best_score_label: Label = $CanvasLayer/BestScoreLabel
 var best_score: int = 0
+const SAVE_FILE_PATH: String = "user://highscore.save"
 @onready var score_label: Label = $CanvasLayer/ScoreLabel
 @onready var start_label: Label = $CanvasLayer/StartLabel
 @onready var pipe_timer: Timer = $PipeTimer
@@ -22,6 +23,23 @@ var best_score: int = 0
 
 var score: int = 0
 var running: bool = false
+
+var bg_music: AudioStreamPlayer
+var point_sound: AudioStreamPlayer
+
+
+func _ready() -> void:
+	load_highscore()
+	
+	bg_music = AudioStreamPlayer.new()
+	bg_music.stream = preload("res://audio/f-bird-bg.mp3")
+	bg_music.finished.connect(bg_music.play)
+	add_child(bg_music)
+	bg_music.play()
+
+	point_sound = AudioStreamPlayer.new()
+	point_sound.stream = preload("res://audio/sfx_point.mp3")
+	add_child(point_sound)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -43,6 +61,7 @@ func _on_pipe_timer_timeout() -> void:
 	pipe_timer.start() # Restart the timer with the new wait_time
 
 func start_game() -> void:
+	bg_music.play()
 	running = true
 	start_label.hide()
 	pipe_timer.wait_time = randf_range(MIN_SPAWN_TIME, MAX_SPAWN_TIME)
@@ -81,13 +100,16 @@ func remove_pipes() -> void:
 func score_point() -> void:
 	score += 1
 	score_label.text = "SCORE : " + str(score)
+	point_sound.play()
 	
 	if score > best_score:
 		best_score = score
 		best_score_label.text = "BEST : " + str(best_score)
+		save_highscore()
 
 
 func _on_player_died() -> void:
+	bg_music.stop()
 	pipe_timer.stop()
 	game_over_timer.start()
 
@@ -97,3 +119,17 @@ func _on_game_over_timer_timeout() -> void:
 	tween.tween_property(black_out, "color:a", 1.0, 1.0)
 	tween.tween_callback(reset_game)
 	tween.tween_property(black_out, "color:a", 0.0, 1.0)
+
+
+func load_highscore() -> void:
+	if FileAccess.file_exists(SAVE_FILE_PATH):
+		var file = FileAccess.open(SAVE_FILE_PATH, FileAccess.READ)
+		if file:
+			best_score = file.get_var()
+			best_score_label.text = "BEST : " + str(best_score)
+
+
+func save_highscore() -> void:
+	var file = FileAccess.open(SAVE_FILE_PATH, FileAccess.WRITE)
+	if file:
+		file.store_var(best_score)
