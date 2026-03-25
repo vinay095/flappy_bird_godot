@@ -69,6 +69,7 @@ wait_time = 2.0
 [node name="BestScoreLabel" type="Label" parent="CanvasLayer" unique_id=2108976992]
 offset_right = 40.0
 offset_bottom = 23.0
+mouse_filter = 2
 text = "BEST : 0"
 label_settings = SubResource("LabelSettings_tefeu")
 
@@ -79,6 +80,7 @@ anchor_right = 1.0
 offset_left = -163.0
 offset_bottom = 50.0
 grow_horizontal = 0
+mouse_filter = 2
 text = "SCORE : 0"
 label_settings = SubResource("LabelSettings_jyhfs")
 horizontal_alignment = 1
@@ -96,6 +98,7 @@ offset_right = 20.0
 offset_bottom = 11.5
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 text = "Tap
 to
 Play"
@@ -109,6 +112,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 color = Color(0, 0, 0, 0)
 metadata/_edit_lock_ = true
 

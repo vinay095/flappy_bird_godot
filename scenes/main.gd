@@ -50,11 +50,6 @@ func _process(_delta: float) -> void:
 		start_game()
 
 
-func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventScreenTouch and event.pressed and not running:
-		start_game()
-
-
 func _on_pipe_timer_timeout() -> void:
 	spawn_pipes()
 	pipe_timer.wait_time = randf_range(MIN_SPAWN_TIME, MAX_SPAWN_TIME)

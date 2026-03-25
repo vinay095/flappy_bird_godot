@@ -65,12 +65,6 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 
 
-func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventScreenTouch and event.pressed and active and not dead:
-		velocity.y = -V_SPEED
-		fly_sound.play()
-
-
 func hit_pipe() -> void:
 	if not has_hit_pipe:
 		has_hit_pipe = true
